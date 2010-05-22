@@ -8,12 +8,12 @@ you'll need those dependencies in order to run chameleon's tests
 
 and hanoi gem:
 
-> [sudo] gem install hanoi
+    [sudo] gem install hanoi
 
 # running the tests
 
-> user@machine:~/projects/Chameleon$ rake test:js
+    rake test:js
 
 # usage
 
-> todo
+    todo
