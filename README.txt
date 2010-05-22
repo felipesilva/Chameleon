@@ -1,3 +1,4 @@
-Introdution
+Chameleon
+=========
 
-Chameleon is a Javascript toolkit that will help you to mock functions when writing unit tests.
+Javascript mocking library.

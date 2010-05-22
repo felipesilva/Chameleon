@@ -1,6 +1,6 @@
 module('Chameleon Tests', {
     setup: function(){
-        var school = {
+        school = {
             enrolment: function() {
                 return 123;
             },
@@ -12,7 +12,7 @@ module('Chameleon Tests', {
 });
 
 test('Test method mocked defaults', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -28,8 +28,27 @@ test('Test method mocked defaults', function() {
     ok(!SchoolMock.mockedMethod['enrolment'].called, 'Method key "called" default value False');
 });
 
-test('Test if the mocked method was called', function() {
-    var school = {
+test('Test method part of the window object', function() {
+
+    function enrolment() {
+        return 123;
+    }
+
+    school = {
+        student: function() {
+            enrolment();
+        }
+    };
+    
+    var SchoolMock = new Chameleon();
+    
+    SchoolMock.expects('school.enrolment');
+      
+    ok(SchoolMock.mockedMethod['enrolment'], 'Method cloned');
+});
+
+test('Test method inside a object, one level', function() {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -38,9 +57,26 @@ test('Test if the mocked method was called', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('school.enrolment');
+      
+    ok(SchoolMock.mockedMethod['enrolment'], 'Method cloned');
+});
+
+test('Test if the mocked method was called', function() {
+    school = {
+        enrolment: function() {
+            return 123;
+        },
+        student: function() {
+            this.enrolment();
+        }
+    };
+    
+    var SchoolMock = new Chameleon();
+    
+    SchoolMock.expects('school.enrolment');
     
     school.student();
     
@@ -48,7 +84,7 @@ test('Test if the mocked method was called', function() {
 });
 
 test('Verify methods that was not called', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -57,10 +93,10 @@ test('Verify methods that was not called', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');
-    SchoolMock.expects('room');
+    SchoolMock.expects('school.enrolment');
+    SchoolMock.expects('school.room');
     
     school.student();
     
@@ -70,7 +106,7 @@ test('Verify methods that was not called', function() {
 });
 
 test('Verify if all mocked methods was called', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -82,10 +118,10 @@ test('Verify if all mocked methods was called', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');
-    SchoolMock.expects('room');
+    SchoolMock.expects('school.enrolment');
+    SchoolMock.expects('school.room');
     
     school.student();
     
@@ -95,7 +131,7 @@ test('Verify if all mocked methods was called', function() {
 });
 
 test('Test message if all mocked methods was called', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -107,10 +143,10 @@ test('Test message if all mocked methods was called', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');
-    SchoolMock.expects('room');
+    SchoolMock.expects('school.enrolment');
+    SchoolMock.expects('school.room');
     
     school.student();
     
@@ -120,7 +156,7 @@ test('Test message if all mocked methods was called', function() {
 });
 
 test('Test message when a mocked methods was not called', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -129,10 +165,10 @@ test('Test message when a mocked methods was not called', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');    
-    SchoolMock.expects('room');
+    SchoolMock.expects('school.enrolment');    
+    SchoolMock.expects('school.room');
     
     school.student();
     
@@ -142,7 +178,7 @@ test('Test message when a mocked methods was not called', function() {
 });
 
 test('Test expected method with argument', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -152,9 +188,9 @@ test('Test expected method with argument', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment').withArguments('felipe');    
+    SchoolMock.expects('school.enrolment').withArguments('felipe');    
     
     school.student();
     
@@ -164,7 +200,7 @@ test('Test expected method with argument', function() {
 });
 
 test('Test expected method with more then one argument', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -175,9 +211,9 @@ test('Test expected method with more then one argument', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment').withArguments('felipe', 'silva');    
+    SchoolMock.expects('school.enrolment').withArguments('felipe', 'silva');    
     
     school.student();
     
@@ -186,8 +222,8 @@ test('Test expected method with more then one argument', function() {
     ok(_verify.result, _verify.message);
 });
 
-test('Test reset mocked object', function() {
-    var school = {
+test('Test reset mocked methods', function() {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -196,9 +232,9 @@ test('Test reset mocked object', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('school.enrolment');
     
     school.student();
     
@@ -206,12 +242,11 @@ test('Test reset mocked object', function() {
     
     SchoolMock.reset();
     
-    equals(school.enrolment, SchoolMock.mockedObject.enrolment);
     ok(!SchoolMock.mockedMethod.enrolment, 'Removing mocked methods.');
 });
 
 test('Test expecting method with return', function() {
-    var school = {
+    school = {
         enrolment: function() {
             return 123;
         },
@@ -220,7 +255,7 @@ test('Test expecting method with return', function() {
         }
     };
     
-    var SchoolMock = new Chameleon(school);
+    var SchoolMock = new Chameleon();
     
     SchoolMock.expects('enrolment').andReturn(456);
     
@@ -229,8 +264,6 @@ test('Test expecting method with return', function() {
     var _verify = SchoolMock.verify();
     
     SchoolMock.reset();
-    
-    console.log(_verify.result, _verify.message)
     
     ok(_verify.result, _verify.message);
 });
