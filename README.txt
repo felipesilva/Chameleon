@@ -1,4 +1,0 @@
-Chameleon
-=========
-
-Javascript mocking library.

@@ -257,14 +257,15 @@ test('Test expecting method with return', function() {
     
     var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('enrolment').andReturn(456);
+    SchoolMock.expects('school.enrolment').andReturn(123);
     
     school.student();
     
-    var _verify = SchoolMock.verify();
-    
-    SchoolMock.reset();
+    var _verify = SchoolMock.verify();    
     
     ok(_verify.result, _verify.message);
+    equals(school.enrolment(), 123);
+    
+    SchoolMock.reset();
 });
 

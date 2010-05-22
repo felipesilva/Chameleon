@@ -40,9 +40,14 @@
                     }
                 };
             
-                obj[methodName] = function() {     
-                    _self.mockedMethod[methodName].called = true;
-                    _self.mockedMethod[methodName].methodArgs = arguments;
+                obj[methodName] = function() {
+                    var _mockedMethod = _self.mockedMethod[methodName];
+                     
+                    _mockedMethod.called = true;
+                    _mockedMethod.methodArgs = arguments;
+                    
+                    if (_mockedMethod.mockedReturn)
+                        return _mockedMethod.mockedReturn;
                 }
             
                 return this.mockedMethod[methodName];
@@ -61,16 +66,7 @@
                         _verify.message = 'The method '+ item.toUpperCase() +' was not called';
                     
                         return _verify;
-                    };                                
-                
-                    if (mockedMethod.mockedReturn) {
-                        if ( !(mockedMethod.mockedReturn === mockedMethod.methodReturn) ) {
-                            _verify.result = false;
-                            _verify.message = 'The method '+ item.toUpperCase() +' was called but returns '+ mockedMethod.methodReturn + ' and is expected ' + mockedMethod.mockedReturn;
-                    
-                            return _verify;
-                        };
-                    }
+                    };
                 
                     if (mockedMethod.mockedArgs) {
                         compareArgs(mockedMethod.mockedArgs, mockedMethod.methodArgs, function(arg){
