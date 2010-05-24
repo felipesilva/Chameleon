@@ -19,12 +19,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
     var Chameleon = function () {
 
-    	function compareArgs(mockedArgs, args, callback) {
+    	function compareArgs(mockedArgs, args, mockedMethod, callback) {
+    	    if (mockedArgs.length !== args.length) {
+    	        callback('The method '+ mockedMethod.toUpperCase() +' expects '+ mockedArgs.length +' arguments and got '+args.length);
+
+                return;
+    	    }
+    	        
     	    for (var i=0; i<mockedArgs.length; i++) {
                 if( !(mockedArgs[i] === args[i]) ) {
-                    callback(mockedArgs[i]);
+                    callback('The method '+ mockedMethod.toUpperCase() +' expects the arguments '+ mockedArgs[i]);
                 
                     return;
                 };
@@ -72,33 +79,22 @@ THE SOFTWARE.
             
                 return this.mockedMethod[methodName];
             },
-            verify: function(){   
-                var _verify = {
-                    result: true,
-                    message: 'All methods was called'
-                };
-            
+            verify: function(){                
                 for(var item in this.mockedMethod) {                
                     var mockedMethod = this.mockedMethod[item];
 
                     if (!mockedMethod.called) {
-                        _verify.result = false;
-                        _verify.message = 'The method '+ item.toUpperCase() +' was not called';
+                        ok(false, 'The method '+ item.toUpperCase() +' was not called');
                     
-                        return _verify;
-                    };
-                
-                    if (mockedMethod.mockedArgs) {
-                        compareArgs(mockedMethod.mockedArgs, mockedMethod.methodArgs, function(arg){
-                            _verify.result = false;
-                            _verify.message = 'The method '+ item.toUpperCase() +' expects the arguments '+ arg;
-                        
-                            return _verify;
+                    } else if (mockedMethod.mockedArgs) {
+                        compareArgs(mockedMethod.mockedArgs, mockedMethod.methodArgs, item, function(msg){
+                            ok(false, msg);
                         });
-                    };
+                        
+                    } else {
+                        ok(true, 'All methods was called');
+                    }
                 }
-            
-                return _verify;
             },
             reset: function() {
                 this.mockedMethod = {};
