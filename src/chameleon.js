@@ -22,6 +22,31 @@ THE SOFTWARE.
 
     var Chameleon = function () {
 
+        function compareObjects(mockedArg, arg) {
+            if (typeof mockedArg === 'object' && typeof arg === 'object') {
+        	    for (var p in mockedArg) {
+        	        if(typeof(mockedArg[p]) !== typeof(arg[p])) return false;
+        	        if((mockedArg[p]===null) !== (arg[p]===null)) return false;
+        	        switch (typeof(mockedArg[p])) {
+        	            case 'undefined':
+        	                if (typeof(arg[p]) != 'undefined') return false;
+        	                break;
+        	            case 'object':        	                
+        	                if(mockedArg[p]!==null && arg[p]!==null && (mockedArg[p].constructor.toString() !== arg[p].constructor.toString() || !mockedArg[p].equals(arg[p]))) return false;
+        	                break;
+        	            case 'function':
+        	                if (p != 'equals' && mockedArg[p].toString() != arg[p].toString()) return false;
+        	                break;
+        	            default:
+        	                if (mockedArg[p] !== arg[p]) return false;
+        	        }
+        	    }
+        	    return true;    	    
+    	    } 
+    	        
+    	    return (mockedArg === arg);
+        }
+        
     	function compareArgs(mockedArgs, args, mockedMethod, callback) {
     	    if (mockedArgs.length !== args.length) {
     	        callback('The method '+ mockedMethod.toUpperCase() +' expects '+ mockedArgs.length +' arguments and got '+args.length);
@@ -29,8 +54,8 @@ THE SOFTWARE.
                 return;
     	    }
     	        
-    	    for (var i=0; i<mockedArgs.length; i++) {
-                if( !(mockedArgs[i] === args[i]) ) {
+    	    for (var i=0; i<mockedArgs.length; i++) {    	                	            
+                if( !compareObjects(mockedArgs[i], args[i]) ) {
                     callback('The method '+ mockedMethod.toUpperCase() +' expects the arguments '+ mockedArgs[i]);
                 
                     return;
@@ -48,16 +73,18 @@ THE SOFTWARE.
     	}
 
         return {
-            mockedMethod: {},
+            mockedMethod: {},            
             expects: function(str) {
                 var n = namespace(str);
-                var obj = n.obj;
+                var obj = n.obj;                    
                 var methodName = n.methodName;
-            
+
                 var _self = this;
                 var mockedMethod = this.mockedMethod[methodName];
             
                 this.mockedMethod[methodName] = {
+                    obj: obj,
+                    func: obj[methodName],
                     called: false,
                     withArguments: function(){
                         _self.mockedMethod[methodName].mockedArgs = arguments;
@@ -97,6 +124,9 @@ THE SOFTWARE.
                 }
             },
             reset: function() {
+                for (var key in this.mockedMethod) {
+                    this.mockedMethod[key].obj[key] = this.mockedMethod[key].func
+                }
                 this.mockedMethod = {};
             }
         };

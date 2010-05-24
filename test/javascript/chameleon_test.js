@@ -263,6 +263,56 @@ test('Test expected method with different numbers of arguments', function() {
     ok = _ok;
 });
 
+test('Test expected method with arguments (type objects)', function() {
+    school = {
+        enrolment: function() {
+            return 123;
+        },
+        student: function() {
+            var options = {name: 'felipe'};
+            this.enrolment(options);
+        }
+    };
+
+    
+    var SchoolMock = new Chameleon();
+    SchoolMock.expects('school.enrolment').withArguments({name: 'felipe'});    
+    
+    school.student();
+    
+    SchoolMock.verify();
+    
+    SchoolMock.reset();
+});
+
+test('Test expected method with different arguments (type objects)', function() {
+    school = {
+        enrolment: function() {
+            return 123;
+        },
+        student: function() {
+            var options = {name: 'felipe'};
+            this.enrolment(options);
+        }
+    };
+    
+    var _ok = ok;
+    
+    window.ok = function(asset, msg){
+        _ok(asset===false, msg);
+    }
+    
+    var SchoolMock = new Chameleon();
+    SchoolMock.expects('school.enrolment').withArguments({name: 'vanessa'});    
+    
+    school.student();
+    
+    SchoolMock.verify();
+    
+    SchoolMock.reset();
+    ok = _ok;
+});
+
 test('Test reset mocked methods', function() {
     school = {
         enrolment: function() {
@@ -275,7 +325,7 @@ test('Test reset mocked methods', function() {
     
     var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('school.enrolment');
+    SchoolMock.expects('school.enrolment').andReturn(456);
     
     school.student();
     
@@ -283,6 +333,7 @@ test('Test reset mocked methods', function() {
     
     SchoolMock.reset();
     
+    equals(school.enrolment(), 123);
     ok(!SchoolMock.mockedMethod.enrolment, 'Removing mocked methods.');
 });
 
@@ -337,4 +388,3 @@ test('Verify if all mocked methods from different objects was called', function(
     
     WorkMock.verify();
 });
-
