@@ -92,7 +92,7 @@ THE SOFTWARE.
                         });
                         
                     } else {
-                        ok(true, 'All methods was called');
+                        ok(true, 'All methods were called');
                     }
                 }
             },

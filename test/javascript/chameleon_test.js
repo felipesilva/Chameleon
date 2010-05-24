@@ -114,14 +114,22 @@ test('Verify methods that was not called', function() {
         }
     };
     
+    var _ok = ok;
+    
+    window.ok = function(asset, msg){
+        _ok(asset===false, msg);
+    }
+    
     var SchoolMock = new Chameleon();
     
-    SchoolMock.expects('school.enrolment');
     SchoolMock.expects('school.room');
     
     school.student();
     
     SchoolMock.verify();
+    SchoolMock.reset();
+    
+    ok = _ok;
 });
 
 test('Verify if all mocked methods was called', function() {
@@ -179,13 +187,21 @@ test('Test message when a mocked methods was not called', function() {
         }
     };
     
+    var _ok = ok;
+    
+    window.ok = function(asset, msg){
+        equals('The method ROOM was not called', msg);
+    }
+    
     var SchoolMock = new Chameleon();
-    SchoolMock.expects('school.enrolment');    
     SchoolMock.expects('school.room');
     
     school.student();
     
     SchoolMock.verify();
+    SchoolMock.reset();
+    
+    ok = _ok;
 });
 
 test('Test expected method with the wrong argument', function() {
