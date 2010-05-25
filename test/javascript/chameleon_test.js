@@ -132,7 +132,7 @@ test('Verify methods that was not called', function() {
     ok = _ok;
 });
 
-test('Verify if all mocked methods was called', function() {
+test('Verify if all mocked methods were called', function() {
     school = {
         enrolment: function() {
             return 123;
@@ -153,6 +153,7 @@ test('Verify if all mocked methods was called', function() {
     school.student();
     
     SchoolMock.verify();
+    SchoolMock.reset();
 });
 
 test('Test message if all mocked methods was called', function() {
@@ -360,7 +361,7 @@ test('Test expecting method with return', function() {
     SchoolMock.reset();
 });
 
-test('Verify if all mocked methods from different objects was called', function() {
+test('Verify if all mocked methods from different objects were called', function() {
     school = {
         enrolment: function() {
             return 123;
@@ -387,4 +388,67 @@ test('Verify if all mocked methods from different objects was called', function(
     work.student();
     
     WorkMock.verify();
+    WorkMock.reset();
+});
+
+test('Verify if the method was called twice', function() {
+    work = {
+        enrolment: function() {
+            return 123;
+        },
+        student: function() {
+            return this.enrolment() + this.enrolment();
+        }
+    };
+    
+    var WorkMock = new Chameleon();
+        
+    WorkMock.expects('work.enrolment').times(2);
+    
+    work.student();
+    
+    WorkMock.verify();
+    WorkMock.reset();
+});
+
+test('Verify if the method was called twice with the same arguments', function() {
+    work = {
+        enrolment: function(room) {
+            return 123 + room;
+        },
+        student: function() {
+            return this.enrolment(456) + this.enrolment(456);
+        }
+    };
+    
+    var WorkMock = new Chameleon();
+        
+    WorkMock.expects('work.enrolment').times(2).withArguments(456);
+    
+    work.student();
+    
+    WorkMock.verify();
+    WorkMock.reset();
+});
+
+test('Verify if the method was called twice with the same returns', function() {
+    work = {
+        enrolment: function(room) {
+            return 123;
+        },
+        student: function() {            
+            return this.enrolment() + this.enrolment();
+        }
+    };
+    
+    var WorkMock = new Chameleon();
+        
+    WorkMock.expects('work.enrolment').times(2).andReturn(456);
+    
+    work.student();
+    
+    equals(school.enrolment(), 123);
+    
+    WorkMock.verify();    
+    WorkMock.reset();
 });

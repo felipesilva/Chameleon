@@ -56,7 +56,7 @@ THE SOFTWARE.
     	        
     	    for (var i=0; i<mockedArgs.length; i++) {    	                	            
                 if( !compareObjects(mockedArgs[i], args[i]) ) {
-                    callback('The method '+ mockedMethod.toUpperCase() +' expects the arguments '+ mockedArgs[i]);
+                    callback('The method '+ mockedMethod.toUpperCase() +' expects the argumentsddd '+ mockedArgs[i]+ ' and got '+ args[i]);
                 
                     return;
                 };
@@ -86,22 +86,33 @@ THE SOFTWARE.
                     obj: obj,
                     func: obj[methodName],
                     called: false,
+                    methodTimes: 0,
+                    times: function(){
+                        _self.mockedMethod[methodName].expectedTimes = arguments[0];
+                        
+                        return _self.mockedMethod[methodName];
+                    },
                     withArguments: function(){
-                        _self.mockedMethod[methodName].mockedArgs = arguments;
+                        _self.mockedMethod[methodName].expectedArgs = arguments;
+                        
+                        return _self.mockedMethod[methodName];
                     },
                     andReturn: function(){
-                        _self.mockedMethod[methodName].mockedReturn = arguments[0];
+                        _self.mockedMethod[methodName].expectedReturn = arguments[0];
+                        
+                        return _self.mockedMethod[methodName];
                     }
                 };
             
-                obj[methodName] = function() {
+                obj[methodName] = function() {                    
                     var _mockedMethod = _self.mockedMethod[methodName];
                      
                     _mockedMethod.called = true;
-                    _mockedMethod.methodArgs = arguments;
+                    _mockedMethod.methodArgs = arguments;                    
+                    _mockedMethod.methodTimes++;
                     
-                    if (_mockedMethod.mockedReturn)
-                        return _mockedMethod.mockedReturn;
+                    if (_mockedMethod.expectedReturn)
+                        return _mockedMethod.expectedReturn;                
                 }
             
                 return this.mockedMethod[methodName];
@@ -109,12 +120,15 @@ THE SOFTWARE.
             verify: function(){                
                 for(var item in this.mockedMethod) {                
                     var mockedMethod = this.mockedMethod[item];
-
+                    
                     if (!mockedMethod.called) {
                         ok(false, 'The method '+ item.toUpperCase() +' was not called');
                     
-                    } else if (mockedMethod.mockedArgs) {
-                        compareArgs(mockedMethod.mockedArgs, mockedMethod.methodArgs, item, function(msg){
+                    } else if (mockedMethod.expectedTimes && (mockedMethod.methodTimes !== mockedMethod.expectedTimes)) {
+                        ok(false, 'The method should be called '+ mockedMethod.expectedTimes +' and got '+ mockedMethod.methodTimes);
+                    
+                    } else if (mockedMethod.expectedArgs) {
+                        compareArgs(mockedMethod.expectedArgs, mockedMethod.methodArgs, item, function(msg){
                             ok(false, msg);
                         });
                         
