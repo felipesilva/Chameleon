@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-    var Chameleon = function () {
+    var Chameleon = function (obj) {
 
         function compareObjects(mockedArg, arg) {
             if (typeof mockedArg === 'object' && typeof arg === 'object') {
@@ -42,7 +42,9 @@ THE SOFTWARE.
         	        }
         	    }
         	    return true;    	    
-    	    } 
+    	    } else if (typeof mockedArg === 'function' && typeof arg === 'function') {
+    	        if (mockedArg.toString() === arg.toString()) return true;
+    	    }    	    
     	        
     	    return (mockedArg === arg);
         }
@@ -56,7 +58,7 @@ THE SOFTWARE.
     	        
     	    for (var i=0; i<mockedArgs.length; i++) {    	                	            
                 if( !compareObjects(mockedArgs[i], args[i]) ) {
-                    callback('The method '+ mockedMethod.toUpperCase() +' expects the argumentsddd '+ mockedArgs[i]+ ' and got '+ args[i]);
+                    callback('The method '+ mockedMethod.toUpperCase() +' expects the arguments '+ mockedArgs[i]+ ' and got '+ args[i]);
                 
                     return;
                 };
@@ -73,11 +75,11 @@ THE SOFTWARE.
     	}
 
         return {
+            mockedObj: obj,
             mockedMethod: {},            
-            expects: function(str) {
-                var n = namespace(str);
-                var obj = n.obj;                    
-                var methodName = n.methodName;
+            expects: function(func) {
+                var obj = this.mockedObj;
+                var methodName = func;
 
                 var _self = this;
                 var mockedMethod = this.mockedMethod[methodName];
