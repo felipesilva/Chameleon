@@ -51,14 +51,14 @@ THE SOFTWARE.
         
     	function compareArgs(mockedArgs, args, mockedMethod, callback) {
     	    if (mockedArgs.length !== args.length) {
-    	        callback('The method '+ mockedMethod.toUpperCase() +' expects '+ mockedArgs.length +' arguments and got '+args.length);
+    	        callback('The method "'+ mockedMethod +'" expects "'+ mockedArgs.length +'" arguments and got "'+ args.length +'"');
 
                 return;
     	    }
     	        
     	    for (var i=0; i<mockedArgs.length; i++) {    	                	            
                 if( !compareObjects(mockedArgs[i], args[i]) ) {
-                    callback('The method '+ mockedMethod.toUpperCase() +' expects the arguments '+ mockedArgs[i]+ ' and got '+ args[i]);
+                    callback('The method "'+ mockedMethod +'" expects the arguments "'+ mockedArgs[i]+ '" and got "'+ args[i] +'"');
                 
                     return;
                 };
@@ -124,10 +124,10 @@ THE SOFTWARE.
                     var mockedMethod = this.mockedMethod[item];
                     
                     if (!mockedMethod.called) {
-                        ok(false, 'The method '+ item.toUpperCase() +' was not called');
+                        ok(false, 'The method "'+ item +'" was not called');
                     
                     } else if (mockedMethod.expectedTimes && (mockedMethod.methodTimes !== mockedMethod.expectedTimes)) {
-                        ok(false, 'The method should be called '+ mockedMethod.expectedTimes +' and got '+ mockedMethod.methodTimes);
+                        ok(false, 'The method should be called "'+ mockedMethod.expectedTimes +'" and got "'+ mockedMethod.methodTimes +'"');
                     
                     } else if (mockedMethod.expectedArgs) {
                         compareArgs(mockedMethod.expectedArgs, mockedMethod.methodArgs, item, function(msg){

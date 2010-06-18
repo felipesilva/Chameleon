@@ -191,7 +191,7 @@ test('Test message when a mocked methods was not called', function() {
     var _ok = ok;
     
     window.ok = function(asset, msg){
-        equals('The method ROOM was not called', msg);
+        equals('The method "room" was not called', msg);
     }
     
     var SchoolMock = new Chameleon(school);
@@ -478,7 +478,7 @@ test('Verify if the method was called twice with the same returns', function() {
     WorkMock.reset();
 });
 
-test('Support mpore then one le', function() {
+test('Check how many times the method enrolment was called', function() {
     work = {
         enrolment: function(room) {
             return 123;
@@ -499,3 +499,5 @@ test('Support mpore then one le', function() {
     WorkMock.verify();    
     WorkMock.reset();
 });
+
+
