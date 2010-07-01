@@ -23,11 +23,11 @@ THE SOFTWARE.
 module('Chameleon Tests', {
     setup: function(){
         school = {
-            enrolment: function() {
+            enrollment: function() {
                 return 123;
             },
             student: function() {
-                this.enrolment();
+                this.enrollment();
             }
         };
     }
@@ -35,82 +35,82 @@ module('Chameleon Tests', {
 
 test('Test method mocked defaults', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);    
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
       
-    ok(!SchoolMock.mockedMethod['enrolment'].called, 'Method key "called" default value False');
+    ok(!SchoolMock.mockedMethod['enrollment'].called, 'Method key "called" default value False');
 });
 
 test('Test method part of the window object', function() {
 
-    function enrolment() {
+    function enrollment() {
         return 123;
     }
 
     school = {
         student: function() {
-            enrolment();
+            enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);
     
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
       
-    ok(SchoolMock.mockedMethod['enrolment'], 'Method cloned');
+    ok(SchoolMock.mockedMethod['enrollment'], 'Method cloned');
 });
 
 test('Test method inside a object, one level', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);
     
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
       
-    ok(SchoolMock.mockedMethod['enrolment'], 'Method cloned');
+    ok(SchoolMock.mockedMethod['enrollment'], 'Method cloned');
 });
 
 test('Test if the mocked method was called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);
     
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
     
     school.student();
     
-    ok(SchoolMock.mockedMethod['enrolment'].called, 'Method was called.');
+    ok(SchoolMock.mockedMethod['enrollment'].called, 'Method was called.');
 });
 
 test('Verify methods that was not called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
@@ -134,20 +134,20 @@ test('Verify methods that was not called', function() {
 
 test('Verify if all mocked methods were called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         room: function() {
             return 456;
         },
         student: function() {
-            this.identity = this.enrolment() + this.room();
+            this.identity = this.enrollment() + this.room();
         }
     };
     
     var SchoolMock = new Chameleon(school);
         
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
     SchoolMock.expects('room');
     
     school.student();
@@ -158,19 +158,19 @@ test('Verify if all mocked methods were called', function() {
 
 test('Test message if all mocked methods was called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         room: function() {
             return 456;
         },
         student: function() {
-            this.identity = this.enrolment() + this.room();
+            this.identity = this.enrollment() + this.room();
         }
     };
     
     var SchoolMock = new Chameleon(school);    
-    SchoolMock.expects('enrolment');
+    SchoolMock.expects('enrollment');
     SchoolMock.expects('room');
     
     school.student();
@@ -180,11 +180,11 @@ test('Test message if all mocked methods was called', function() {
 
 test('Test message when a mocked methods was not called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
@@ -207,24 +207,24 @@ test('Test message when a mocked methods was not called', function() {
 
 test('Test expected method with the wrong argument', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
             var name = 'felipe';
-            this.enrolment(name);
+            this.enrollment(name);
         }
     };
     
     var _ok = ok;
     
     window.ok = function(asset, msg){
-        _ok(asset===false, 'The method ENROLMENT expects the arguments silva');
+        _ok(asset===false, 'The method enrollment expects the arguments silva');
     }
     
     
     var SchoolMock = new Chameleon(school);    
-    SchoolMock.expects('enrolment').withArguments('silva');    
+    SchoolMock.expects('enrollment').withArguments('silva');    
     
     school.student();
     
@@ -236,13 +236,13 @@ test('Test expected method with the wrong argument', function() {
 
 test('Test expected method with different numbers of arguments', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
             var name = 'felipe';
             var surname = 'silva';
-            this.enrolment(name, surname);
+            this.enrollment(name, surname);
         }
     };
     
@@ -253,7 +253,7 @@ test('Test expected method with different numbers of arguments', function() {
     }
     
     var SchoolMock = new Chameleon(school);
-    SchoolMock.expects('enrolment').withArguments('felipe');    
+    SchoolMock.expects('enrollment').withArguments('felipe');    
     
     school.student();
     
@@ -266,18 +266,18 @@ test('Test expected method with different numbers of arguments', function() {
 
 test('Test expected method with arguments (type objects)', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
             var options = {name: 'felipe'};
-            this.enrolment(options);
+            this.enrollment(options);
         }
     };
 
     
     var SchoolMock = new Chameleon(school);
-    SchoolMock.expects('enrolment').withArguments({name: 'felipe'});    
+    SchoolMock.expects('enrollment').withArguments({name: 'felipe'});    
     
     school.student();
     
@@ -288,7 +288,7 @@ test('Test expected method with arguments (type objects)', function() {
 
 test('Test expected method with arguments (type function)', function() {
     school = {
-        enrolment: function(callback) {
+        enrollment: function(callback) {
             return 123;
         },
         student: function() {
@@ -309,12 +309,12 @@ test('Test expected method with arguments (type function)', function() {
 
 test('Test expected method with different arguments (type objects)', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
             var options = {name: 'felipe'};
-            this.enrolment(options);
+            this.enrollment(options);
         }
     };
     
@@ -325,7 +325,7 @@ test('Test expected method with different arguments (type objects)', function() 
     }
     
     var SchoolMock = new Chameleon(school);
-    SchoolMock.expects('enrolment').withArguments({name: 'vanessa'});    
+    SchoolMock.expects('enrollment').withArguments({name: 'vanessa'});    
     
     school.student();
     
@@ -337,17 +337,17 @@ test('Test expected method with different arguments (type objects)', function() 
 
 test('Test reset mocked methods', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);
     
-    SchoolMock.expects('enrolment').andReturn(456);
+    SchoolMock.expects('enrollment').andReturn(456);
     
     school.student();
     
@@ -355,57 +355,57 @@ test('Test reset mocked methods', function() {
     
     SchoolMock.reset();
     
-    equals(school.enrolment(), 123);
-    ok(!SchoolMock.mockedMethod.enrolment, 'Removing mocked methods.');
+    equals(school.enrollment(), 123);
+    ok(!SchoolMock.mockedMethod.enrollment, 'Removing mocked methods.');
 });
 
 test('Test expecting method with return', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            this.enrolment();
+            this.enrollment();
         }
     };
     
     var SchoolMock = new Chameleon(school);
     
-    SchoolMock.expects('enrolment').andReturn(123);
+    SchoolMock.expects('enrollment').andReturn(123);
     
     school.student();
     
     SchoolMock.verify();    
     
-    equals(school.enrolment(), 123);
+    equals(school.enrollment(), 123);
     
     SchoolMock.reset();
 });
 
 test('Verify if all mocked methods from different objects were called', function() {
     school = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            return this.enrolment();
+            return this.enrollment();
         }
     };
     
     work = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            return school.enrolment() + this.enrolment();
+            return school.enrollment() + this.enrollment();
         }
     };
     
     var WorkMock = new Chameleon(work);
     var SchoolMock = new Chameleon(school);
         
-    WorkMock.expects('enrolment');
-    SchoolMock.expects('enrolment');
+    WorkMock.expects('enrollment');
+    SchoolMock.expects('enrollment');
     
     work.student();
     
@@ -418,17 +418,17 @@ test('Verify if all mocked methods from different objects were called', function
 
 test('Verify if the method was called twice', function() {
     work = {
-        enrolment: function() {
+        enrollment: function() {
             return 123;
         },
         student: function() {
-            return this.enrolment() + this.enrolment();
+            return this.enrollment() + this.enrollment();
         }
     };
     
     var WorkMock = new Chameleon(work);
         
-    WorkMock.expects('enrolment').times(2);
+    WorkMock.expects('enrollment').times(2);
     
     work.student();
     
@@ -438,17 +438,17 @@ test('Verify if the method was called twice', function() {
 
 test('Verify if the method was called twice with the same arguments', function() {
     work = {
-        enrolment: function(room) {
+        enrollment: function(room) {
             return 123 + room;
         },
         student: function() {
-            return this.enrolment(456) + this.enrolment(456);
+            return this.enrollment(456) + this.enrollment(456);
         }
     };
     
     var WorkMock = new Chameleon(work);
         
-    WorkMock.expects('enrolment').times(2).withArguments(456);
+    WorkMock.expects('enrollment').times(2).withArguments(456);
     
     work.student();
     
@@ -458,43 +458,43 @@ test('Verify if the method was called twice with the same arguments', function()
 
 test('Verify if the method was called twice with the same returns', function() {
     work = {
-        enrolment: function(room) {
+        enrollment: function(room) {
             return 123;
         },
         student: function() {            
-            return this.enrolment() + this.enrolment();
+            return this.enrollment() + this.enrollment();
         }
     };
     
     var WorkMock = new Chameleon(work);
         
-    WorkMock.expects('enrolment').times(2).andReturn(456);
+    WorkMock.expects('enrollment').times(2).andReturn(456);
     
     work.student();
     
-    equals(school.enrolment(), 123);
+    equals(school.enrollment(), 123);
     
     WorkMock.verify();    
     WorkMock.reset();
 });
 
-test('Check how many times the method enrolment was called', function() {
+test('Check how many times the method enrollment was called', function() {
     work = {
-        enrolment: function(room) {
+        enrollment: function(room) {
             return 123;
         },
         student: function() {            
-            return this.enrolment() + this.enrolment();
+            return this.enrollment() + this.enrollment();
         }
     };
     
     var WorkMock = new Chameleon(work);
         
-    WorkMock.expects('enrolment').times(2).andReturn(456);
+    WorkMock.expects('enrollment').times(2).andReturn(456);
     
     work.student();
     
-    equals(school.enrolment(), 123);
+    equals(school.enrollment(), 123);
     
     WorkMock.verify();    
     WorkMock.reset();
